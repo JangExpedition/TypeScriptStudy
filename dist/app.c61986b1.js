@@ -164,8 +164,8 @@ var store = {
 };
 var Api = /** @class */function () {
   function Api(url) {
-    this.url = url;
     this.ajax = new XMLHttpRequest();
+    this.url = url;
   }
   Api.prototype.getRequest = function () {
     this.ajax.open("GET", this.url, false);
@@ -214,7 +214,7 @@ var View = /** @class */function () {
   };
   View.prototype.getHtml = function () {
     var snapshot = this.htmlList.join("");
-    this.clearHtmlList;
+    this.clearHtmlList();
     return snapshot;
   };
   View.prototype.setTemplateData = function (key, value) {
@@ -287,7 +287,7 @@ var NewsFeedView = /** @class */function (_super) {
     return _this;
   }
   NewsFeedView.prototype.render = function () {
-    store.currentPage = Number(location.hash.substr(7) || 1);
+    store.currentPage = Number(location.hash.substring(7) || 1);
     for (var i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
       var _a = this.feeds[i],
         read = _a.read,
@@ -374,7 +374,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53296" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51305" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

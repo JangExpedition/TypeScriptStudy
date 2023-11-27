@@ -1,20 +1,20 @@
 interface Store {
-  currentPage: number;
   feeds: NewsFeed[];
+  currentPage: number;
 }
 
 interface News {
   readonly id: number;
+  readonly time_ago: string;
   readonly title: string;
   readonly url: string;
   readonly user: string;
-  readonly time_ago: string;
   readonly content: string;
 }
 
 interface NewsFeed extends News {
-  readonly comments_count: number;
   readonly points: number;
+  readonly comments_count: number;
   read?: boolean;
 }
 
@@ -40,12 +40,12 @@ const store: Store = {
 };
 
 class Api {
-  url: string;
   ajax: XMLHttpRequest;
+  url: string;
 
   constructor(url: string) {
-    this.url = url;
     this.ajax = new XMLHttpRequest();
+    this.url = url;
   }
 
   protected getRequest<AjaxResponse>(): AjaxResponse {
@@ -69,10 +69,10 @@ class NewsDetailApi extends Api {
 }
 
 abstract class View {
-  template: string;
-  renderTemplate: string;
-  container: HTMLElement;
-  htmlList: string[];
+  private template: string;
+  private renderTemplate: string;
+  private container: HTMLElement;
+  private htmlList: string[];
 
   constructor(containerId: string, template: string) {
     const containerElement = document.getElementById(containerId);
@@ -87,26 +87,26 @@ abstract class View {
     this.htmlList = [];
   }
 
-  updateView(): void {
+  protected updateView(): void {
     this.container.innerHTML = this.renderTemplate;
     this.renderTemplate = this.template;
   }
 
-  addHtml(htmlString: string): void {
+  protected addHtml(htmlString: string): void {
     this.htmlList.push(htmlString);
   }
 
-  getHtml(): string {
+  protected getHtml(): string {
     const snapshot = this.htmlList.join("");
-    this.clearHtmlList;
+    this.clearHtmlList();
     return snapshot;
   }
 
-  setTemplateData(key: string, value: string): void {
+  protected setTemplateData(key: string, value: string): void {
     this.renderTemplate = this.renderTemplate.replace(`{{__${key}__}}`, value);
   }
 
-  clearHtmlList(): void {
+  private clearHtmlList(): void {
     this.htmlList = [];
   }
 
@@ -114,8 +114,8 @@ abstract class View {
 }
 
 class Router {
-  routeTable: RouteInfo[];
-  defaultRoute: RouteInfo | null;
+  private routeTable: RouteInfo[];
+  private defaultRoute: RouteInfo | null;
 
   constructor() {
     window.addEventListener("hashchange", this.route.bind(this));
@@ -150,8 +150,8 @@ class Router {
 }
 
 class NewsFeedView extends View {
-  api: NewsFeedApi;
-  feeds: NewsFeed[];
+  private api: NewsFeedApi;
+  private feeds: NewsFeed[];
 
   constructor(containerId: string) {
     let template = `
@@ -191,7 +191,7 @@ class NewsFeedView extends View {
   }
 
   render(): void {
-    store.currentPage = Number(location.hash.substr(7) || 1);
+    store.currentPage = Number(location.hash.substring(7) || 1);
 
     for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
       const { read, id, title, comments_count, user, points, time_ago } = this.feeds[i];
@@ -229,7 +229,7 @@ class NewsFeedView extends View {
     this.updateView();
   }
 
-  makeFeed(): void {
+  private makeFeed(): void {
     this.feeds.map((feed) => (feed.read = false));
   }
 }
